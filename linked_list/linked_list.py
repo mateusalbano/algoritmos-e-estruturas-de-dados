@@ -9,7 +9,7 @@ class linked_list():
         self.head = None
         self.tail = None
         self.size = 0
-    #Return the size
+
     def get_size(self) -> int:
         return self.size
 
@@ -121,6 +121,7 @@ class linked_list():
         node = self.__get_node_at(pos)
         node.previous.next = node.next
         node.next.previous = node.previous
+        self.size -= 1
         return node.value
 
     def remove(self, item):
@@ -134,6 +135,7 @@ class linked_list():
         
         node.previous.next = node.next
         node.next.previous = node.previous
+        self.size -= 1
         return node.value
 
     def get_at(self, pos: int):
