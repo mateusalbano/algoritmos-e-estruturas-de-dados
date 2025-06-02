@@ -99,6 +99,7 @@ class linked_list():
         new_node.previous = this_node.previous
         new_node.next = this_node
         this_node.previous = new_node
+        self.size += 1
 
     def replace_at(self, pos: int, item):
         self.__get_node_at(pos).value = item
