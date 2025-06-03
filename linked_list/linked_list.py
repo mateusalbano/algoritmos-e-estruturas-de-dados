@@ -113,11 +113,9 @@ class linked_list():
         
     def remove_at(self, pos: int):
         if pos == 0:
-            self.pop_front()
-            return
+            return self.pop_front()
         if pos == self.size - 1:
-            self.pop_back()
-            return
+            return self.pop_back()
 
         node = self.__get_node_at(pos)
         node.previous.next = node.next
