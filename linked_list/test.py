@@ -1,7 +1,34 @@
+import random
 from linked_list import linked_list
 from linked_list import node
 
 list = linked_list()
+
+for i in range(0, 25):
+    list.push_back(random.randint(0, 100))
+
+list.bubblesort()
+print("bubblesort:")
+print(list.to_string(), "\n")
+
+list.clear()
+
+for i in range(0, 25):
+    list.push_back(random.randint(0, 100))
+
+list.quicksort()
+print("quicksort:")
+print(list.to_string(), "\n")
+
+list.clear()
+
+for i in range(0, 25):
+    list.push_back(random.randint(0, 100))
+
+list.mergesort()
+print("mergesort:")
+print(list.to_string())
+
 list.push_back(1)
 print("back:", list.back())
 print("front:", list.front())

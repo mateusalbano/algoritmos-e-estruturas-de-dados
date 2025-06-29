@@ -57,12 +57,8 @@ class array_list():
         self.data[pos] = new_item
 
     def insert_at(self, pos: int, item):
-        if pos < 0 or pos > self.size - 1:
+        if pos < 0 or pos > self.size:
             raise IndexError("list index out of range")
-
-        if pos == self.size - 1:
-            self.push_back(item)
-            return
         
         if self.size == len(self.data):
             self.__relocate(max(2, self.newSize * 1.5))
@@ -110,10 +106,14 @@ class array_list():
         i = 0
         j = 0
         while i < self.size:
+            is_sorted = True
             while j < self.size - i - 1:
                 if self.data[j] > self.data[j + 1]:
                     self.data[j], self.data[j + 1] = self.data[j + 1], self.data[j]
+                    is_sorted = False
                 j += 1
+            if is_sorted:
+                break
             j = 0
             i += 1
 
@@ -157,8 +157,8 @@ class array_list():
 
     def quicksort(self):
         def partition(l, r):
-            pos = int((l + r) / 2)
-            pivot = self.data[pos]
+            pos = r
+            pivot = self.data[r]
             i = l
             j = l
             while j <= r:
@@ -169,7 +169,7 @@ class array_list():
                     self.data[i], self.data[j] = self.data[j], self.data[i]
                     i += 1
                 j += 1
-            self.data[i], self.data[r] = self.data[r], self.data[i]
+            self.data[i], self.data[pos] = self.data[pos], self.data[i]
             return i
         
         def recursion(l, r):

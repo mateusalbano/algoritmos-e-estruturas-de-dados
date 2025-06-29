@@ -1,8 +1,8 @@
 class node:
-    def __init__(self, value):
+    def __init__(self, value = None, previous = None, next = None):
         self.value = value
-        self.previous = None
-        self.next = None
+        self.previous = previous
+        self.next = next
 
 class linked_list():
     def __init__(self):
@@ -152,6 +152,152 @@ class linked_list():
         else:
             return None
         
+    def sort(self):
+        self.mergesort()
+
+    def bubblesort(self):
+        i = 0
+        dummy = node(next=self.head)
+        self.head.previous = dummy
+        while i < self.size:
+            j = 0
+            cur = dummy.next
+            while j < self.size - i - 1:
+                next = cur.next
+                next_next = next.next
+                previous = cur.previous
+                swap = False
+                if cur.value > next.value:
+                    swap = True
+                    previous.next = next
+                    next.previous = previous
+                    next.next = cur
+                    cur.previous = next
+                    cur.next = next_next
+                    if next_next:
+                        next_next.previous = cur
+
+                if not swap:
+                    cur = cur.next
+                j += 1
+            
+            i += 1
+        self.head = dummy.next
+        self.head.previous = None
+        cur = self.head
+        while cur.next:
+            cur = cur.next
+
+        self.tail = cur
+
+    def mergesort(self):
+
+        def find_middle(node) -> node:
+            fast = node
+            slow = node
+            while fast and fast.next:
+                fast = fast.next.next
+                slow = slow.next
+
+            return slow.previous
+
+        def merge(l, r) -> node:
+            dummy = node()
+            cur = dummy
+            while l and r:
+                if l.value < r.value:
+                    cur.next = l
+                    l.previous = cur
+                    cur = l
+                    l = l.next
+                else:
+                    cur.next = r
+                    r.previous = cur
+                    cur = r
+                    r = r.next 
+
+            while l:
+                cur.next = l
+                l.previous = cur
+                cur = l
+                l = l.next
+
+            while r:
+                cur.next = r
+                r.previous = cur
+                cur = r
+                r = r.next
+
+            self.tail = cur
+            dummy.next.previous = None
+            return dummy.next
+
+        def recursion(head) -> node:
+            if not head or not head.next:
+                return head
+            middle = find_middle(head)
+            next_middle = middle.next
+            next_middle.previous = None
+            middle.next = None
+            l = recursion(head)
+            r = recursion(next_middle)
+            return merge(l, r)
+        
+        self.head = recursion(self.head)
+
+
+    def quicksort(self):
+
+        def partition(head) -> node:
+            pivot = head
+            l1 = node()
+            l2 = node()
+            dummy1 = l1
+            dummy2 = l2
+            while head:
+                next = head.next
+                head.next = None
+                if head.value < pivot.value:
+                    l1.next = head
+                    head.previous = l1
+                    l1 = l1.next
+                else:
+                    l2.next = head
+                    head.previous = l2
+                    l2 = l2.next
+                head = next
+
+            l1.next = dummy2.next
+            dummy2.next.previous = l1
+            dummy1.next.previous = None
+            return dummy1.next, pivot
+            
+        def recursion(head) -> node:
+            if not head or not head.next:
+                return head
+            head, pivot = partition(head)
+            next = pivot.next
+            pivot.next = None
+            if next:
+                next.previous = None
+            l = recursion(head)
+            head = l
+            r = recursion(next)
+            while l.next:
+                l = l.next
+
+            l.next = r
+            if r:
+                r.previous = l
+            return head
+        
+        self.head = recursion(self.head)
+        new_tail = self.head
+        while new_tail.next:
+            new_tail = new_tail.next
+
+        self.tail = new_tail
+
     def empty(self) -> bool:
         return self.size == 0
     
