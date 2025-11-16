@@ -25,7 +25,7 @@ Atualizações futuras para a base de código:
 
 - Adicionar opção max para a heap.
 - Implementação de uma tabela de dispersão (Hash Table/Hash Map/Dictionary).
-- Implementação de um conjunto de um Hash Set.
+- Implementação de um Hash Set.
 - Adicionar mais métodos a estrutura de grafo.
 - Criar resolvedor de expressões numéricas com as estruturas presentes.
 - Adicionar métodos de remoção de nó da árvore binária.
