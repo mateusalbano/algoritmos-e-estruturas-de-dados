@@ -1,9 +1,10 @@
 class Node:
-    def __init__(self, value = None, next = None):
+    def __init__(self, value = None, previous = None, next = None):
         self.value = value
+        self.previous = previous
         self.next = next
 
-class LinkedList():
+class DoublyLinkedList():
     def __init__(self):
         self.__head = None
         self.__tail = None
@@ -13,7 +14,7 @@ class LinkedList():
         self.__node = self.__head
         return self
 
-    def __next__(self) -> any:
+    def __next__(self):
         if self.__node != None:
             item = self.__node.value
             self.__node = self.__node.next
@@ -48,6 +49,7 @@ class LinkedList():
             self.__tail = self.__head
         else:
             new_node = Node(item)
+            new_node.previous = self.__tail
             self.__tail.next = new_node
             self.__tail = new_node
         self.__size += 1
@@ -59,60 +61,71 @@ class LinkedList():
         else:
             new_node = Node(item)
             new_node.next = self.__head
+            self.__head.previous = new_node
             self.__head = new_node
         self.__size += 1
+
+    def pop_back(self):
+        if self.__size == 0:
+            raise IndexError("pop from empty list")
+        
+        last_item = self.__tail.value
+        if self.__size == 1:
+            self.__head = None
+            self.__tail = None
+        else:
+            self.__tail = self.__tail.previous
+            self.__tail.next = None
+        
+        self.__size -= 1
+        return last_item
     
     def pop_front(self):
         if self.__size == 0:
             raise IndexError("pop from empty list")
-
+        
         last_item = self.__head.value
         if self.__size == 1:
             self.__head = None
             self.__tail = None
         else:
             self.__head = self.__head.next
-
+            self.__head.previous = None
+        
         self.__size -= 1
         return last_item
     
-    def pop_back(self):
-        node = None
-        if self.__size == 0:
-            raise IndexError("pop from empty list")
-        if self.__size == 1:
-            node = self.__head
-            self.__head = None
-            self.__tail = None
+    def back(self):
+        if self.__tail:
+            return self.__tail.value
         else:
-            previous, node = self.__get_node_at(self.__size - 1)
-            previous.next = None
-            self.__tail = previous
-
-        self.__size -= 1
-        return node.value
+            return None
+        
+    def front(self):
+        if self.__head:
+            return self.__head.value
+        else:
+            return None
     
     def __get_node(self, item) -> Node:
         node = self.__head
-        previous = None
         while node:
-            previous = node
             if node.value == item:
                 break
             node = node.next
-        return previous, node
+        return node
     
     def __get_node_at(self, pos: int) -> Node:
         if pos < 0 or pos > self.__size - 1:
             raise IndexError("list index out of range")
         node = self.__head
-        previous = None
         i = 0
-        while i < pos:
-            previous = node
+        while node:
+            if i == pos:
+                break
             node = node.next
             i += 1
-        return previous, node
+        return node
     
     def insert_at(self, pos: int, item):
         if pos == 0:
@@ -122,21 +135,19 @@ class LinkedList():
             self.push_back(item)
             return
 
-        previous, node = self.__get_node_at(pos)
-        
+        this_node = self.__get_node_at(pos)
         new_node = Node(item)
-        if previous:
-            previous.next = new_node
-
-        new_node.next = node
+        this_node.previous.next = new_node
+        new_node.previous = this_node.previous
+        new_node.next = this_node
+        this_node.previous = new_node
         self.__size += 1
 
     def replace_at(self, pos: int, item):
-        _, node = self.__get_node_at(pos)
-        node.value = item
+        self.__get_node_at(pos).value = item
 
     def replace(self, item, new_item):
-        _, node = self.__get_node(item)
+        node = self.__get_node(item)
         if node:
             node.value = new_item
         else:
@@ -147,45 +158,42 @@ class LinkedList():
             return self.pop_front()
         if pos == self.__size - 1:
             return self.pop_back()
-        
-        previous, node = self.__get_node_at(pos)
-        if previous:
-            previous.next = node.next
 
-        node.next = None
+        node = self.__get_node_at(pos)
+        node.previous.next = node.next
+        node.next.previous = node.previous
         self.__size -= 1
         return node.value
 
     def remove(self, item):
-        previous, node = self.__get_node(item)
+        node = self.__get_node(item)
         if not node:
             raise ValueError("linked_list.remove(item): item not in list")
         if node is self.__head:
             return self.pop_front()
         if node is self.__tail:
             return self.pop_back()
-    
         
-        previous.next = node.next
+        node.previous.next = node.next
+        node.next.previous = node.previous
         self.__size -= 1
         return node.value
 
     def get_at(self, pos: int):
-        _, node = self.__get_node_at(pos)
-        return node.value
+        return self.__get_node_at(pos).value
+
+    def front(self):
+        if self.__head:
+            return self.__head.value
+        else:
+            return None
 
     def back(self):
         if self.__tail:
             return self.__tail.value
         else:
             return None
-    
-    def front(self):
-        if self.__head:
-            return self.__head.value
-        else:
-            return None
-  
+        
     def sort(self):
         self.mergesort()
 
@@ -195,31 +203,36 @@ class LinkedList():
         
         i = 0
         dummy = Node(next=self.__head)
+        self.__head.previous = dummy
         while i < self.__size:
             j = 0
             cur = dummy.next
-            previous = dummy
             while j < self.__size - i - 1:
                 next = cur.next
                 next_next = next.next
+                previous = cur.previous
                 swap = False
                 if cur.value > next.value:
                     swap = True
                     previous.next = next
-                    cur.next = next_next
+                    next.previous = previous
                     next.next = cur
-                    previous = next
+                    cur.previous = next
+                    cur.next = next_next
+                    if next_next:
+                        next_next.previous = cur
 
                 if not swap:
-                    previous = cur
                     cur = cur.next
                 j += 1
             
             i += 1
         self.__head = dummy.next
+        self.__head.previous = None
         cur = self.__head
         while cur.next:
             cur = cur.next
+
         self.__tail = cur
 
     def mergesort(self):
@@ -229,13 +242,11 @@ class LinkedList():
         def find_middle(node):
             fast = node
             slow = node
-            previous = None
             while fast and fast.next:
-                previous = slow
                 fast = fast.next.next
                 slow = slow.next
 
-            return previous
+            return slow.previous
 
         def merge(l, r):
             dummy = Node()
@@ -243,24 +254,29 @@ class LinkedList():
             while l and r:
                 if l.value < r.value:
                     cur.next = l
+                    l.previous = cur
                     cur = l
                     l = l.next
                 else:
                     cur.next = r
+                    r.previous = cur
                     cur = r
                     r = r.next 
 
             while l:
                 cur.next = l
+                l.previous = cur
                 cur = l
                 l = l.next
 
             while r:
                 cur.next = r
+                r.previous = cur
                 cur = r
                 r = r.next
 
             self.__tail = cur
+            dummy.next.previous = None
             return dummy.next
 
         def recursion(head):
@@ -268,6 +284,7 @@ class LinkedList():
                 return head
             middle = find_middle(head)
             next_middle = middle.next
+            next_middle.previous = None
             middle.next = None
             l = recursion(head)
             r = recursion(next_middle)
@@ -291,13 +308,17 @@ class LinkedList():
                 head.next = None
                 if head.value < pivot.value:
                     l1.next = head
+                    head.previous = l1
                     l1 = l1.next
                 else:
                     l2.next = head
+                    head.previous = l2
                     l2 = l2.next
                 head = next
 
             l1.next = dummy2.next
+            dummy2.next.previous = l1
+            dummy1.next.previous = None
             return dummy1.next, pivot
 
         def recursion(head):
@@ -306,6 +327,8 @@ class LinkedList():
             head, pivot = partition(head)
             next = pivot.next
             pivot.next = None
+            if next:
+                next.previous = None
             l = recursion(head)
             head = l
             r = recursion(next)
@@ -313,6 +336,8 @@ class LinkedList():
                 l = l.next
 
             l.next = r
+            if r:
+                r.previous = l
             return head
         
         self.__head = recursion(self.__head)
@@ -332,15 +357,3 @@ class LinkedList():
         self.__tail = None
         self.__head = None
         self.__size = 0
-
-    def to_string(self) -> str:
-        if self.__size == 0:
-            return "[]"
-        to_string = "["
-        node = self.__head
-        while node is not self.__tail:
-            to_string += str(node.value) + ", "
-            node = node.next
-
-        to_string += str(node.value) + "]"
-        return to_string
