@@ -6,17 +6,16 @@ Implementações de estruturas de dados e algoritmos importantes em Python.
 
 Estruturas implementadas:
 
-* ArrayList (lista estática).
-* OrderedArrayList (lista estática ordenada).
-* LinkedList (lista encadeada).
-* DoublyLinkedList (lista duplamente encadeada).
-* Stack (pilha).
-* MinStack (pilha mínima).
-* Queue (fila).
-* Heap (fila de prioridades).
-* Deque (fila duplamente terminada).
-* BinaryTree (árvore binária).
-* Graph (grafo).
+- ArrayList (lista estática).
+- LinkedList (lista encadeada).
+- DoublyLinkedList (lista duplamente encadeada).
+- Stack (pilha).
+- MinStack (pilha mínima).
+- Queue (fila).
+- Heap (fila de prioridades).
+- Deque (fila duplamente terminada).
+- BinaryTree (árvore binária).
+- Graph (grafo).
 
 OBS: Verifique a demonstração das implementações nos Notebooks Python.
 
