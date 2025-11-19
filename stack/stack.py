@@ -6,10 +6,9 @@ from linked_list.linked_list import LinkedList
 class Stack:
     def __init__(self):
         self.__items = LinkedList()
-        self.__items.__iter__()
 
     def __iter__(self):
-        return self
+        return self.__items.__iter__()
 
     def __next__(self) -> any:
         return self.__items.__next__()
