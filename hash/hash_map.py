@@ -11,6 +11,12 @@ class HashMap:
         self.data = [None] * initalSize
         self.size = 0
 
+    def __getitem__(self, key: any):
+         return self.get(key)
+    
+    def __setitem__(self, key: any, value: any):
+        self.put(key, value)
+
     def _hash(self, key):
         return hash(key) % len(self.data)
     

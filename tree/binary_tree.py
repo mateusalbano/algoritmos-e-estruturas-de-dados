@@ -1,23 +1,4 @@
-import sys
-from pathlib import Path
-
-# Add parent directory to path for imports
-parent_dir = str(Path(__file__).parent.parent)
-if parent_dir not in sys.path:
-    sys.path.insert(0, parent_dir)
-
-# Import using importlib to avoid conflicts with built-in 'queue' module
-import importlib.util
-stack_spec = importlib.util.spec_from_file_location("stack_module", str(Path(__file__).parent.parent / "stack" / "stack.py"))
-stack_module = importlib.util.module_from_spec(stack_spec)
-stack_spec.loader.exec_module(stack_module)
-Stack = stack_module.Stack
-
-queue_spec = importlib.util.spec_from_file_location("queue_module", str(Path(__file__).parent.parent / "queue" / "queue.py"))
-queue_module = importlib.util.module_from_spec(queue_spec)
-queue_spec.loader.exec_module(queue_module)
-QueueClass = queue_module.Queue
-
+from queue import Queue
 class Node:
     def __init__(self, value = None, left = None, right = None):
         self.value = value
@@ -31,12 +12,36 @@ class BinaryTree:
         self.__size = 0
 
     def __str__(self) -> str:
-        return str(self.preorder_traversal())
+        items = []
+        queue = Queue()
+        
+        if self.__root:
+            queue.put(self.__root)
+
+        while not queue.empty():
+            levelSize = queue.qsize()
+            while levelSize != 0:
+                cur = queue.get()
+                items.append(cur.value)
+                if cur.left:
+                    queue.put(cur.left)
+                elif cur.right:
+                    items.append(None)
+                
+                if cur.right:
+                    queue.put(cur.right)
+                elif cur.left:
+                    items.append(None)
+
+                levelSize -= 1
+
+        return str(items)
+
 
     def __iter__(self):
-        self.__nodes = Stack()
+        self.__nodes = []
         if self.__root:
-            self.__nodes.push(self.__root)
+            self.__nodes.append(self.__root)
         return self
 
     def __next__(self) -> any:
@@ -112,19 +117,19 @@ class BinaryTree:
         if not self.__root:
             return False
         
-        q = QueueClass()
-        q.enqueue(self.__root)
+        q = Queue()
+        q.put(self.__root)
 
         while not q.empty():
-            cur = q.dequeue()
+            cur = q.get()
             if cur.value == item:
                 return True
             
             if cur.left:
-                q.enqueue(cur.left)
+                q.put(cur.left)
 
             if cur.right:
-                q.enqueue(cur.right)
+                q.put(cur.right)
 
         return False
             

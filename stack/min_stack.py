@@ -1,51 +1,54 @@
-from stack import Stack
-
 class MinStack:
 
     def __init__(self):
-        self.__stack = Stack()
-        self.__min_stack = Stack()
+        self.__stack = []
+        self.__min_stack = []
 
     def __iter__(self):
-        return self.__stack.__iter__()
+        self.__index = 0
+        return self
 
     def __next__(self) -> any:
-        return self.__stack.__next__()
+        if self.__index < len(self.__items):
+            item = self.__stack[self.__index]
+            self.__index += 1
+            return item
+        else:
+            raise StopIteration
     
     def __len__(self) -> int:
         return len(self.__stack)
     
     def __str__(self) -> str:
-        return self.__stack.__str__()
+        return str(self.__stack)
 
     def push(self, item):
-        if self.empty() or not item > self.__min_stack.peek():
-            self.__min_stack.push(item)
-        self.__stack.push(item)
-
-    def size(self) -> int:
-        return self.__stack.size()
-    
-    def empty(self) -> bool:
-        return self.__stack.empty()
+        if self.empty() or not item > self.__min_stack[-1]:
+            self.__min_stack.append(item)
+        self.__stack.append(item)
 
     def peek(self):
         if self.empty():
             raise IndexError("empty MinStack")
-        return self.__stack.peek()
+        return self.__stack[-1]
     
     def min(self):
-        if self.__min_stack.empty():
+        if self.empty():
             raise IndexError("empty MinStack")
-        return self.__min_stack.peek()
+        return self.__min_stack[-1]
 
     def pop(self):
         if self.empty():
             raise IndexError("empty MinStack")
         
-        if not self.__min_stack.peek() < self.__stack.peek():
+        if not self.__min_stack[-1] < self.__stack[-1]:
             self.__min_stack.pop()
 
         return self.__stack.pop()
-
-
+    
+    def empty(self):
+        return len(self.__stack) == 0
+    
+    def clear(self):
+        self.__stack = []
+        self.__min_stack = []
