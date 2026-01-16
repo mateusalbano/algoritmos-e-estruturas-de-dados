@@ -5,12 +5,6 @@ class Graph:
     def __init__(self):
         self.__nodes = {}
 
-    def add_node(self, node: any):
-        if node in self.__nodes:
-            raise ValueError("node already in graph")
-        
-        self.__nodes[node] = {}
-
     def __iter__(self):
         self.__index = 0
         return self
@@ -29,10 +23,15 @@ class Graph:
     def __str__(self) -> str:
         return str(self.__nodes)
             
+    def add_node(self, node):
+        if node in self.__nodes:
+            raise ValueError("Graph.add_node(node): node already in graph")
+        
+        self.__nodes[node] = {}
 
-    def pop_node(self, node: any) -> any:
+    def pop_node(self, node):
         if node not in self.__nodes:
-            raise ValueError("node not in graph")
+            raise ValueError("Graph.pop_node(node): node not in graph")
         
         for n in self.__nodes:
             if node in self.__nodes[n]:
@@ -41,13 +40,13 @@ class Graph:
         return self.__nodes.pop(node)
 
 
-    def add_edge(self, from_node: any, to_node: any, distance=1, directed=True):
+    def add_edge(self, from_node, to_node, distance=1, directed=True):
         if from_node in self.__nodes and to_node in self.__nodes:
             self.__nodes[from_node][to_node] = distance
             if not directed:
                 self.__nodes[to_node][from_node] = distance
         else:
-            raise ValueError("one or both nodes not in graph")
+            raise ValueError("Graph.add_edge(from_node, to_node, distance, directed=): one or both nodes not in graph")
         
     def remove_edge(self, from_node, to_node, directed=True):
         if from_node in self.__nodes and to_node in self.__nodes:
@@ -55,15 +54,23 @@ class Graph:
             if not directed:
                 self.__nodes[to_node].pop(from_node)
         else:
-            raise ValueError("one or both nodes not in graph")
+            raise ValueError("Graph.remove_edge(from_node, to_node, directed): one or both nodes not in graph")
 
     def get_nodes(self):
         return list(self.__nodes)
     
-    def empty(self) -> bool:
-        return len(self.__nodes) == 0
+    def get_edges(self):
+        edges = []
+        for from_node in self.__nodes:
+            for to_node, weight in self.__nodes[from_node].items():
+                edges.append((from_node, to_node, weight))
+        
+        return edges
     
     def dijkstra(self, start_node) -> dict:
+        if start_node not in self.__nodes:
+            raise ValueError("Graph.dijkstra(start_node): start node not in graph")
+        
         heap = []
         heapq.heappush(heap, (0, start_node))
         visited = set()
@@ -88,8 +95,13 @@ class Graph:
 
         return distances
         
-    
     def shortest_path(self, start_node, end_node):
+        if start_node not in self.__nodes:
+            raise ValueError("Graph.shortest_path(start_node, end_node): start node not in graph")
+        
+        if end_node not in self.__nodes:
+            raise ValueError("Graph.shortest_path(start_node, end_node): end node not in graph")
+
         if start_node == end_node:
             return []
         distances = self.dijkstra(start_node)
@@ -151,3 +163,12 @@ class Graph:
                 visited = {}
         
         return False
+    
+    def size(self) -> int:
+        return len(self.__nodes)
+    
+    def empty(self) -> bool:
+        return len(self.__nodes) == 0
+    
+    def clear(self):
+        self.__nodes = {}

@@ -25,15 +25,18 @@ class Stack:
 
     def pop(self):
         if self.empty():
-            raise IndexError("pop from empty stack")
+            raise IndexError("Stack.pop(): pop from empty stack")
         
         return self.__items.pop()
 
     def peek(self):
         if self.empty():
-            raise IndexError("peek from empty stack")
+            raise IndexError("Stack.peek(): peek from empty stack")
         
         return self.__items[-1]
+    
+    def size(self) -> int:
+        return len(self.__items)
 
     def empty(self):
         return len(self.__items) == 0

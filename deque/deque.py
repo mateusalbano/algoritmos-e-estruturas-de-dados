@@ -28,32 +28,33 @@ class Deque:
 
     def pop_front(self):
         if self.empty():
-            raise IndexError("pop from empty deque")
+            raise IndexError("Deque.pop_front(): pop from empty deque")
         
         return self.__items.pop_front()
     
     def pop_back(self):
         if self.empty():
-            raise IndexError("pop from empty deque")
+            raise IndexError("Deque.pop_back(): pop from empty deque")
         
         return self.__items.pop_back()
     
     def front(self) -> any:
         if self.empty():
-            raise IndexError("front from empty deque")
+            raise IndexError("Deque.front(): front from empty deque")
         
         return self.__items.front()
     
     def back(self) -> any:
         if self.empty():
-            raise IndexError("back from empty deque")
+            raise IndexError("Deque.back(): back from empty deque")
         
         return self.__items.back()
     
+    def size(self) -> int:
+        return len(self.__items)
+
     def empty(self) -> bool:
         return len(self.__items) == 0
     
     def clear(self):
         self.__items.clear()
-
-    

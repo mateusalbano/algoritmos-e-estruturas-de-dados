@@ -8,7 +8,7 @@ class MinStack:
         self.__index = 0
         return self
 
-    def __next__(self) -> any:
+    def __next__(self):
         if self.__index < len(self.__items):
             item = self.__stack[self.__index]
             self.__index += 1
@@ -27,25 +27,28 @@ class MinStack:
             self.__min_stack.append(item)
         self.__stack.append(item)
 
-    def peek(self):
-        if self.empty():
-            raise IndexError("empty MinStack")
-        return self.__stack[-1]
-    
-    def min(self):
-        if self.empty():
-            raise IndexError("empty MinStack")
-        return self.__min_stack[-1]
-
     def pop(self):
         if self.empty():
-            raise IndexError("empty MinStack")
+            raise IndexError("MinStack.pop(): pop from empty stack")
         
         if not self.__min_stack[-1] < self.__stack[-1]:
             self.__min_stack.pop()
 
         return self.__stack.pop()
     
+    def peek(self):
+        if self.empty():
+            raise IndexError("MinStack.peek(): peek from empty stack")
+        return self.__stack[-1]
+    
+    def min(self):
+        if self.empty():
+            raise IndexError("MinStack.min(): min from empty stack")
+        return self.__min_stack[-1]
+
+    def size(self) -> int:
+        return len(self.__stack)
+
     def empty(self):
         return len(self.__stack) == 0
     

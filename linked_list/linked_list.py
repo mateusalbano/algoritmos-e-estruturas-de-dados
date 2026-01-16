@@ -13,7 +13,7 @@ class LinkedList():
         self.__node = self.__head
         return self
 
-    def __next__(self) -> any:
+    def __next__(self):
         if self.__node != None:
             item = self.__node.value
             self.__node = self.__node.next
@@ -21,14 +21,14 @@ class LinkedList():
         else:
             raise StopIteration
     
-    def __len__(self) -> int:
-        return self.__size
-    
     def __getitem__(self, pos: int):
          return self.get_at(pos)
     
-    def __setitem__(self, pos: int, item: any):
+    def __setitem__(self, pos: int, item):
         self.replace_at(pos, item)
+
+    def __len__(self) -> int:
+        return self.__size
     
     def __str__(self) -> str:
         if self.__size == 0:
@@ -41,6 +41,38 @@ class LinkedList():
 
         to_string += str(node.value) + "]"
         return to_string
+    
+    def __get_node(self, item) -> Node:
+        node = self.__head
+        previous = None
+        while node:
+            previous = node
+            if node.value == item:
+                break
+            node = node.next
+        return previous, node
+    
+    def __get_node_at(self, pos: int) -> Node:
+        if pos < 0 or pos > self.__size - 1:
+            raise IndexError("LinkedList.__get_node_at(pos): list index out of range")
+        node = self.__head
+        previous = None
+        i = 0
+        while i < pos:
+            previous = node
+            node = node.next
+            i += 1
+        return previous, node
+
+    def push_front(self, item):
+        if self.__size == 0:
+            self.__head = Node(item)
+            self.__tail = self.__head
+        else:
+            new_node = Node(item)
+            new_node.next = self.__head
+            self.__head = new_node
+        self.__size += 1
 
     def push_back(self, item):
         if self.__size == 0:
@@ -52,19 +84,9 @@ class LinkedList():
             self.__tail = new_node
         self.__size += 1
 
-    def push_front(self, item):
-        if self.__size == 0:
-            self.__head = Node(item)
-            self.__tail = self.__head
-        else:
-            new_node = Node(item)
-            new_node.next = self.__head
-            self.__head = new_node
-        self.__size += 1
-    
     def pop_front(self):
         if self.__size == 0:
-            raise IndexError("pop from empty list")
+            raise IndexError("LinkedList.pop_front(): pop from empty list")
 
         last_item = self.__head.value
         if self.__size == 1:
@@ -79,7 +101,7 @@ class LinkedList():
     def pop_back(self):
         node = None
         if self.__size == 0:
-            raise IndexError("pop from empty list")
+            raise IndexError("LinkedList.pop_back(): pop from empty list")
         if self.__size == 1:
             node = self.__head
             self.__head = None
@@ -92,27 +114,18 @@ class LinkedList():
         self.__size -= 1
         return node.value
     
-    def __get_node(self, item) -> Node:
-        node = self.__head
-        previous = None
-        while node:
-            previous = node
-            if node.value == item:
-                break
-            node = node.next
-        return previous, node
+    def front(self):
+        if self.__head:
+            return self.__head.value
+        else:
+            return None
+        
+    def back(self):
+        if self.__tail:
+            return self.__tail.value
+        else:
+            return None
     
-    def __get_node_at(self, pos: int) -> Node:
-        if pos < 0 or pos > self.__size - 1:
-            raise IndexError("list index out of range")
-        node = self.__head
-        previous = None
-        i = 0
-        while i < pos:
-            previous = node
-            node = node.next
-            i += 1
-        return previous, node
     
     def insert_at(self, pos: int, item):
         if pos == 0:
@@ -131,17 +144,6 @@ class LinkedList():
         new_node.next = node
         self.__size += 1
 
-    def replace_at(self, pos: int, item):
-        _, node = self.__get_node_at(pos)
-        node.value = item
-
-    def replace(self, item, new_item):
-        _, node = self.__get_node(item)
-        if node:
-            node.value = new_item
-        else:
-            raise ValueError("linked_list.replace(item, new_item): item not in list")
-        
     def remove_at(self, pos: int):
         if pos == 0:
             return self.pop_front()
@@ -155,36 +157,34 @@ class LinkedList():
         node.next = None
         self.__size -= 1
         return node.value
+    
+    def get_at(self, pos: int):
+        _, node = self.__get_node_at(pos)
+        return node.value
 
+    def replace_at(self, pos: int, item):
+        _, node = self.__get_node_at(pos)
+        node.value = item
+
+    def replace(self, item, new_item):
+        _, node = self.__get_node(item)
+        if node:
+            node.value = new_item
+        else:
+            raise ValueError("LinkedList.replace(item, new_item): item not in list")
+        
     def remove(self, item):
         previous, node = self.__get_node(item)
         if not node:
-            raise ValueError("linked_list.remove(item): item not in list")
+            raise ValueError("LinkedList.remove(item): item not in list")
         if node is self.__head:
             return self.pop_front()
         if node is self.__tail:
             return self.pop_back()
     
-        
         previous.next = node.next
         self.__size -= 1
         return node.value
-
-    def get_at(self, pos: int):
-        _, node = self.__get_node_at(pos)
-        return node.value
-
-    def back(self):
-        if self.__tail:
-            return self.__tail.value
-        else:
-            return None
-    
-    def front(self):
-        if self.__head:
-            return self.__head.value
-        else:
-            return None
   
     def sort(self):
         self.mergesort()
@@ -275,7 +275,6 @@ class LinkedList():
         
         self.__head = recursion(self.__head)
 
-
     def quicksort(self):
         if self.__size < 2:
             return
@@ -322,6 +321,9 @@ class LinkedList():
 
         self.__tail = new_tail
 
+    def size(self) -> int:
+        return self.__size
+    
     def empty(self) -> bool:
         return self.__size == 0
 
@@ -332,15 +334,3 @@ class LinkedList():
         self.__tail = None
         self.__head = None
         self.__size = 0
-
-    def to_string(self) -> str:
-        if self.__size == 0:
-            return "[]"
-        to_string = "["
-        node = self.__head
-        while node is not self.__tail:
-            to_string += str(node.value) + ", "
-            node = node.next
-
-        to_string += str(node.value) + "]"
-        return to_string

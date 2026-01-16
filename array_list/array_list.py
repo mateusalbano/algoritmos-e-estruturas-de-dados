@@ -1,5 +1,6 @@
 class ArrayList():
-    def __init__(self, initialSize: int = 10):
+
+    def __init__(self, initialSize = 10):
         self.__data = [None] * initialSize
         self.__size = 0
 
@@ -7,7 +8,7 @@ class ArrayList():
         self.__index = 0
         return self
 
-    def __next__(self) -> any:
+    def __next__(self):
         if self.__index < self.__size:
             item = self.get_at(self.__index)
             self.__index += 1
@@ -15,14 +16,14 @@ class ArrayList():
         else:
             raise StopIteration
     
-    def __len__(self) -> int:
-        return self.__size
-    
     def __getitem__(self, pos: int):
          return self.get_at(pos)
     
-    def __setitem__(self, pos: int, item: any):
+    def __setitem__(self, pos: int, item):
         self.replace_at(pos, item)
+    
+    def __len__(self) -> int:
+        return self.__size
     
     def __str__(self):
         if self.__size == 0:
@@ -44,9 +45,6 @@ class ArrayList():
             i += 1
         self.__data = temp
 
-    def size(self) -> int:
-        return self.__size
-
     def push_back(self, item):
         if self.__size == len(self.__data):
             self.__relocate(max(2, int(self.__size * 1.5)))
@@ -56,41 +54,15 @@ class ArrayList():
 
     def pop_back(self):
         if self.__size == 0:
-            raise IndexError("pop from empty list")
+            raise IndexError("ArrayList.pop_back(): pop from empty list")
         self.__size -= 1
         item = self.__data[self.__size]
         self.__data[self.__size] = None
         return item
     
-    def get_at(self, pos: int):
-        if pos < 0 or pos > self.__size - 1:
-            raise IndexError("list index out of range")
-        
-        return self.__data[pos]
-    
-    def search(self, item) -> int:
-        i = 0
-        while i < self.__size:
-            if self.__data[i] == item:
-                return i
-            i += 1
-        return -1
-    
-    def replace(self, item, new_item):
-        pos = self.search(item)
-        if pos != -1:
-            self.__data[pos] = new_item
-        else:
-            raise ValueError("array_list.replace(item, new_item): item not in list")
-        
-    def replace_at(self, pos: int, new_item):
-        if pos < 0 or pos > self.__size - 1:
-            raise IndexError("list index out of range")
-        self.__data[pos] = new_item
-
     def insert_at(self, pos: int, item):
         if pos < 0 or pos > self.__size:
-            raise IndexError("list index out of range")
+            raise IndexError("ArrayList.insert_at(pos, item): list index out of range")
         
         if self.__size == len(self.__data):
             self.__relocate(max(2, int(self.__size * 1.5)))
@@ -102,16 +74,9 @@ class ArrayList():
         self.__data[pos] = item
         self.__size += 1
 
-    def remove(self, item):
-        pos = self.search(item)
-        if pos == -1:
-            raise ValueError("array_list.remove(item): item not in list")
-        
-        return self.remove_at(pos)
-
     def remove_at(self, pos: int):
         if pos < 0 or pos > self.__size - 1:
-            raise IndexError("list index out of range")
+            raise IndexError("ArrayList.remove_at(pos): list index out of range")
         
         if pos == self.__size - 1 or self.__size == 1:
            return self.pop_back()
@@ -126,19 +91,39 @@ class ArrayList():
         self.__size -= 1
         return item
     
-    def swap(self, pos1: int, pos2: int):
-        if pos1 < 0 or pos1 > self.size() - 1:
-            raise IndexError("list index out of range")
+    def get_at(self, pos: int):
+        if pos < 0 or pos > self.__size - 1:
+            raise IndexError("ArrayList.get_at(pos): list index out of range")
+        
+        return self.__data[pos]
 
-        if pos2 < 0 or pos2 > self.size() - 1:
-            raise IndexError("list index out of range")
+    def replace_at(self, pos: int, new_item):
+        if pos < 0 or pos > self.__size - 1:
+            raise IndexError("ArrayList.replace_at(pos, new_item): list index out of range")
+        self.__data[pos] = new_item
+    
+    def search(self, item) -> int:
+        i = 0
+        while i < self.__size:
+            if self.__data[i] == item:
+                return i
+            i += 1
+        return -1
+    
+    def replace(self, item, new_item):
+        pos = self.search(item)
+        if pos != -1:
+            self.__data[pos] = new_item
+        else:
+            raise ValueError("ArrayList.replace(item, new_item): item not in list")
 
-        self.__data[pos1], self.__data[pos2] = self.__data[pos2], self.__data[pos1]
-
-    def clear(self, initialSize: int = 10):
-        self.__data = [None] * initialSize
-        self.__size = 0
-
+    def remove(self, item):
+        pos = self.search(item)
+        if pos == -1:
+            raise ValueError("ArrayList.remove(item): item not in list")
+        
+        return self.remove_at(pos)
+    
     def sort(self):
         self.quicksort()
 
@@ -183,7 +168,6 @@ class ArrayList():
                 k += 1
                 j += 1
             
-
         def recursion(l, r):
             if l >= r:
                 return
@@ -193,7 +177,6 @@ class ArrayList():
             merge(l, middle, r)
 
         recursion(0, self.__size - 1)
-
 
     def quicksort(self):
         def partition(l, r):
@@ -221,8 +204,24 @@ class ArrayList():
 
         recursion(0, self.__size - 1)
 
+    def size(self) -> int:
+        return self.__size
+    
     def empty(self) -> bool:
         return self.__size == 0
-    
+
     def contains(self, item) -> bool:
         return self.search(item) != -1
+    
+    def clear(self, initialSize = 10):
+        self.__data = [None] * initialSize
+        self.__size = 0
+    
+    def swap(self, pos1: int, pos2: int):
+        if pos1 < 0 or pos1 > self.size() - 1:
+            raise IndexError("ArrayList.swap(pos1, pos2): list index out of range")
+
+        if pos2 < 0 or pos2 > self.size() - 1:
+            raise IndexError("ArrayList.swap(pos1, pos2): list index out of range")
+
+        self.__data[pos1], self.__data[pos2] = self.__data[pos2], self.__data[pos1]

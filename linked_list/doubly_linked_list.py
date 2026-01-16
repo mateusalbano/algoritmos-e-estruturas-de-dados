@@ -22,14 +22,14 @@ class DoublyLinkedList():
         else:
             raise StopIteration
     
-    def __len__(self) -> int:
-        return self.__size
-    
     def __getitem__(self, pos: int):
          return self.get_at(pos)
     
-    def __setitem__(self, pos: int, item: any):
+    def __setitem__(self, pos: int, item):
         self.replace_at(pos, item)
+    
+    def __len__(self) -> int:
+        return self.__size
     
     def __str__(self) -> str:
         if self.__size == 0:
@@ -42,6 +42,37 @@ class DoublyLinkedList():
 
         to_string += str(node.value) + "]"
         return to_string
+    
+    def __get_node(self, item) -> Node:
+        node = self.__head
+        while node:
+            if node.value == item:
+                break
+            node = node.next
+        return node
+    
+    def __get_node_at(self, pos: int) -> Node:
+        if pos < 0 or pos > self.__size - 1:
+            raise IndexError("DoublyLinkedList.__get_node_at(pos): list index out of range")
+        node = self.__head
+        i = 0
+        while node:
+            if i == pos:
+                break
+            node = node.next
+            i += 1
+        return node
+    
+    def push_front(self, item):
+        if self.__size == 0:
+            self.__head = Node(item)
+            self.__tail = self.__head
+        else:
+            new_node = Node(item)
+            new_node.next = self.__head
+            self.__head.previous = new_node
+            self.__head = new_node
+        self.__size += 1
 
     def push_back(self, item):
         if self.__size == 0:
@@ -54,35 +85,9 @@ class DoublyLinkedList():
             self.__tail = new_node
         self.__size += 1
 
-    def push_front(self, item):
-        if self.__size == 0:
-            self.__head = Node(item)
-            self.__tail = self.__head
-        else:
-            new_node = Node(item)
-            new_node.next = self.__head
-            self.__head.previous = new_node
-            self.__head = new_node
-        self.__size += 1
-
-    def pop_back(self):
-        if self.__size == 0:
-            raise IndexError("pop from empty list")
-        
-        last_item = self.__tail.value
-        if self.__size == 1:
-            self.__head = None
-            self.__tail = None
-        else:
-            self.__tail = self.__tail.previous
-            self.__tail.next = None
-        
-        self.__size -= 1
-        return last_item
-    
     def pop_front(self):
         if self.__size == 0:
-            raise IndexError("pop from empty list")
+            raise IndexError("DoublyLinkedList.pop_front(): pop from empty list")
         
         last_item = self.__head.value
         if self.__size == 1:
@@ -95,38 +100,33 @@ class DoublyLinkedList():
         self.__size -= 1
         return last_item
     
-    def back(self):
-        if self.__tail:
-            return self.__tail.value
-        else:
-            return None
+    def pop_back(self):
+        if self.__size == 0:
+            raise IndexError("DoublyLinkedList.pop_back(): pop from empty list")
         
+        last_item = self.__tail.value
+        if self.__size == 1:
+            self.__head = None
+            self.__tail = None
+        else:
+            self.__tail = self.__tail.previous
+            self.__tail.next = None
+        
+        self.__size -= 1
+        return last_item
+    
     def front(self):
         if self.__head:
             return self.__head.value
         else:
             return None
-    
-    def __get_node(self, item) -> Node:
-        node = self.__head
-        while node:
-            if node.value == item:
-                break
-            node = node.next
-        return node
-    
-    def __get_node_at(self, pos: int) -> Node:
-        if pos < 0 or pos > self.__size - 1:
-            raise IndexError("list index out of range")
-        node = self.__head
-        i = 0
-        while node:
-            if i == pos:
-                break
-            node = node.next
-            i += 1
-        return node
-    
+        
+    def back(self):
+        if self.__tail:
+            return self.__tail.value
+        else:
+            return None
+
     def insert_at(self, pos: int, item):
         if pos == 0:
             self.push_front(item)
@@ -143,16 +143,6 @@ class DoublyLinkedList():
         this_node.previous = new_node
         self.__size += 1
 
-    def replace_at(self, pos: int, item):
-        self.__get_node_at(pos).value = item
-
-    def replace(self, item, new_item):
-        node = self.__get_node(item)
-        if node:
-            node.value = new_item
-        else:
-            raise ValueError("linked_list.replace(item, new_item): item not in list")
-        
     def remove_at(self, pos: int):
         if pos == 0:
             return self.pop_front()
@@ -164,11 +154,24 @@ class DoublyLinkedList():
         node.next.previous = node.previous
         self.__size -= 1
         return node.value
+    
+    def get_at(self, pos: int):
+        return self.__get_node_at(pos).value
 
+    def replace_at(self, pos: int, item):
+        self.__get_node_at(pos).value = item
+
+    def replace(self, item, new_item):
+        node = self.__get_node(item)
+        if node:
+            node.value = new_item
+        else:
+            raise ValueError("DoublyLinkedList.replace(item, new_item): item not in list")
+        
     def remove(self, item):
         node = self.__get_node(item)
         if not node:
-            raise ValueError("linked_list.remove(item): item not in list")
+            raise ValueError("DoublyLinkedList.remove(item): item not in list")
         if node is self.__head:
             return self.pop_front()
         if node is self.__tail:
@@ -178,21 +181,6 @@ class DoublyLinkedList():
         node.next.previous = node.previous
         self.__size -= 1
         return node.value
-
-    def get_at(self, pos: int):
-        return self.__get_node_at(pos).value
-
-    def front(self):
-        if self.__head:
-            return self.__head.value
-        else:
-            return None
-
-    def back(self):
-        if self.__tail:
-            return self.__tail.value
-        else:
-            return None
         
     def sort(self):
         self.mergesort()
@@ -347,6 +335,9 @@ class DoublyLinkedList():
 
         self.__tail = new_tail
 
+    def size(self) -> int:
+        return self.__size
+    
     def empty(self) -> bool:
         return self.__size == 0
 
