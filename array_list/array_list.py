@@ -1,6 +1,6 @@
 class ArrayList():
 
-    def __init__(self, initialSize = 10):
+    def __init__(self, initialSize=10):
         self.__data = [None] * initialSize
         self.__size = 0
 
@@ -25,7 +25,7 @@ class ArrayList():
     def __len__(self) -> int:
         return self.__size
     
-    def __str__(self):
+    def __str__(self) -> str:
         if self.__size == 0:
             return "[]"
         to_string = "["
@@ -171,7 +171,7 @@ class ArrayList():
         def recursion(l, r):
             if l >= r:
                 return
-            middle = int((l + r) / 2)
+            middle = (l + r) // 2
             recursion(l, middle)
             recursion(middle + 1, r)
             merge(l, middle, r)
@@ -212,8 +212,8 @@ class ArrayList():
 
     def contains(self, item) -> bool:
         return self.search(item) != -1
-    
-    def clear(self, initialSize = 10):
+
+    def clear(self, initialSize=10):
         self.__data = [None] * initialSize
         self.__size = 0
     

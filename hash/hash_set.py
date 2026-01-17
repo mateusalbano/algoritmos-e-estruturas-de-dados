@@ -26,7 +26,7 @@ class HashSet:
     def __len__(self) -> int:
         return self.__size
 
-    def __str__(self):
+    def __str__(self) -> str:
         to_string = "{"
         i = 0
         for node in self.__data:

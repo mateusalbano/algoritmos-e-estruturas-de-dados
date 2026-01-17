@@ -6,7 +6,7 @@ class Stack:
         self.__index = 0
         return self
 
-    def __next__(self) -> any:
+    def __next__(self):
         if self.__index < len(self.__items):
             item = self.__items[self.__index]
             self.__index += 1

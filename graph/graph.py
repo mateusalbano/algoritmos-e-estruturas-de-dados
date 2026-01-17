@@ -9,7 +9,7 @@ class Graph:
         self.__index = 0
         return self
 
-    def __next__(self) -> any:
+    def __next__(self):
         if self.__index < len(self):
             item = list(self.__nodes)[self.__index]
             self.__index += 1

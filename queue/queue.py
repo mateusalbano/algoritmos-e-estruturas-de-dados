@@ -11,7 +11,7 @@ class Queue:
     def __iter__(self):
         return self.__items.__iter__()
 
-    def __next__(self) -> any:
+    def __next__(self):
         return self.__items.__next__()
     
     def __len__(self) -> int:

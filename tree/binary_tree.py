@@ -59,7 +59,7 @@ class BinaryTree:
         return str(items)
 
     def insert(self, item):
-        def __insert(cur: Node, item):
+        def __insert(cur, item):
             if item > cur.value:
                 if cur.right:
                     __insert(cur.right, item)
@@ -80,7 +80,7 @@ class BinaryTree:
 
     
     def dfs(self, item) -> bool:
-        def __dfs(cur: Node, item) -> bool:
+        def __dfs(cur, item) -> bool:
             return cur != None and (cur.value == item or __dfs(cur.left, item) or __dfs(cur.right, item))
         
         return __dfs(cur=self.__root, item=item)
@@ -105,9 +105,9 @@ class BinaryTree:
 
         return False
             
-    def preorder_traversal(self) -> list: 
+    def preorder_traversal(self) -> list:
         traversal = []
-        def __preorder_traversal(cur: Node):
+        def __preorder_traversal(cur):
             if not cur:
                 return
             traversal.append(cur.value)
@@ -117,9 +117,9 @@ class BinaryTree:
         __preorder_traversal(self.__root)
         return traversal
 
-    def inorder_traversal(self) -> list: 
+    def inorder_traversal(self) -> list:
         traversal = []
-        def __inorder_traversal(cur: Node):
+        def __inorder_traversal(cur):
             if not cur:
                 return
             __inorder_traversal(cur.left)
@@ -129,10 +129,10 @@ class BinaryTree:
         __inorder_traversal(self.__root)
         return traversal
     
-    def postorder_traversal(self) -> list: 
+    def postorder_traversal(self) -> list:
         traversal = []
 
-        def __postorder_traversal(cur: Node):
+        def __postorder_traversal(cur):
             if not cur:
                 return
             __postorder_traversal(cur.left)
@@ -149,7 +149,7 @@ class BinaryTree:
         return self.__size == 0
     
     def contains(self, item) -> bool:
-        def __contains(cur: Node, item) -> bool:
+        def __contains(cur, item):
             if item == cur.value:
                 return True
             if item > cur.value:

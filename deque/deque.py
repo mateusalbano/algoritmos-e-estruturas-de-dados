@@ -11,7 +11,7 @@ class Deque:
     def __iter__(self):
         return self.__items.__iter__()
     
-    def __next__(self) -> any:
+    def __next__(self):
         return self.__items.__next__()
 
     def __len__(self) -> int:
@@ -38,13 +38,13 @@ class Deque:
         
         return self.__items.pop_back()
     
-    def front(self) -> any:
+    def front(self):
         if self.empty():
             raise IndexError("Deque.front(): front from empty deque")
         
         return self.__items.front()
     
-    def back(self) -> any:
+    def back(self):
         if self.empty():
             raise IndexError("Deque.back(): back from empty deque")
         

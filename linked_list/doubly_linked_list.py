@@ -36,7 +36,7 @@ class DoublyLinkedList():
             return "[]"
         to_string = "["
         node = self.__head
-        while node is not self.__tail:
+        while node != self.__tail:
             to_string += str(node.value) + ", "
             node = node.next
 
@@ -172,9 +172,9 @@ class DoublyLinkedList():
         node = self.__get_node(item)
         if not node:
             raise ValueError("DoublyLinkedList.remove(item): item not in list")
-        if node is self.__head:
+        if node == self.__head:
             return self.pop_front()
-        if node is self.__tail:
+        if node == self.__tail:
             return self.pop_back()
         
         node.previous.next = node.next
@@ -342,7 +342,7 @@ class DoublyLinkedList():
         return self.__size == 0
 
     def contains(self, item) -> bool:
-        return self.__get_node(item) is not None
+        return self.__get_node(item) != None
     
     def clear(self):
         self.__tail = None
