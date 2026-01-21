@@ -1,6 +1,6 @@
 class ArrayList():
 
-    def __init__(self, initialSize=10):
+    def __init__(self, initialSize = 10):
         self.__data = [None] * initialSize
         self.__size = 0
 
@@ -203,6 +203,26 @@ class ArrayList():
             recursion(pivot + 1, r)
 
         recursion(0, self.__size - 1)
+
+    def copy(self) -> ArrayList:
+        new_list = ArrayList(len(self.__data))
+        new_list.__size = self.__size
+        i = 0
+        while i < self.__size:
+            new_list.__data[i] = self.__data[i]
+            i += 1
+
+        return new_list
+    
+    def concatenate(self, list: ArrayList):
+        newSize = self.__size + list.__size
+        if newSize > len(self.__data):
+            self.__relocate(newSize)
+
+        for i in range(self.__size, newSize):
+            self.__data[i] = list.__data[i - self.__size]
+        
+        self.__size = newSize
 
     def size(self) -> int:
         return self.__size

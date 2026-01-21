@@ -335,6 +335,40 @@ class DoublyLinkedList():
 
         self.__tail = new_tail
 
+
+    def copy(self) -> DoublyLinkedList:
+        new_list = DoublyLinkedList()
+        if self.empty():
+            return new_list
+        
+        cur = self.__head
+        dummy = Node()
+        previous = dummy
+        while cur:
+            new_node = Node(cur.value)
+            previous.next = new_node
+            if previous != dummy:
+                new_node.previous = previous
+            cur = cur.next
+            previous = new_node
+
+        new_list.__head = dummy.next
+        new_list.__tail = previous
+        new_list.__size = self.__size
+
+        return new_list
+
+    def concatenate(self, list: DoublyLinkedList):
+        list_copy = list.copy()
+        if self.empty():
+            self.__head = list_copy.__head
+        elif not list_copy.empty():
+            self.__tail.next = list_copy.__head
+            list_copy.__head.previous = self.__tail
+
+        self.__tail = list_copy.__tail
+        self.__size += list_copy.__size
+
     def size(self) -> int:
         return self.__size
     
